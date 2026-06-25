@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="ERROR" >	<!-- configuration -->	
+  <Appenders>						<!-- where you want it to be -->
+
+    
+    <Console name="LoggingToConsole" target="SYSTEM_OUT">			<!-- in console -->
+      <PatternLayout>
+      		<Pattern>
+      		  %d - %c - [%M] - (%p) - %m - %n
+      		</Pattern>
+      </PatternLayout>
+    </Console>
+    
+  </Appenders>
+
+  <Loggers>			<!--  to link with appender -->
+ 
+    <Root level="trace">		<!-- scan logger object class -->
+      <AppenderRef ref="LoggingToConsole"/>
+    </Root>
+  </Loggers>
+</Configuration>

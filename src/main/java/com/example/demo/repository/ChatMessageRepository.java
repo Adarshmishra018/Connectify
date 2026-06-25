@@ -1,0 +1,24 @@
+package com.example.demo.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.example.demo.Entity.ChatMessageEntity;
+
+import java.util.List;
+
+public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, Long> {
+	
+
+	//Spring Data JPA generates SQL,Repository returns Saved Entity,Controller returns it as JSON.
+	
+	
+	    List<ChatMessageEntity> findBySenderIdAndReceiverIdOrReceiverIdAndSenderId(//fetches data from DB saves into entity and return list of objects
+	            Long senderId,
+	            Long receiverId,
+	            Long receiverId2,
+	            Long senderId2
+	    );
+
+	    List<ChatMessageEntity> findByReceiverId(Long receiverId);//fetch Data from DB and returns list of objects
+
+}

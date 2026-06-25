@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .chat-container {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 500px;
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    #chatUserName {
+      text-align: center;
+      color: #333;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 12px;
+      font-size: 22px;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      background: #f7f7fb;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+
+    .messages .msg {
+      max-width: 75%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .messages .msg.sent {
+      align-self: flex-end;
+      background: #764ba2;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .messages .msg.received {
+      align-self: flex-start;
+      background: #e6e6ee;
+      color: #333;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message-box {
+      display: flex;
+      gap: 10px;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    #messageInput:focus {
+      border-color: #764ba2;
+    }
+
+    .message-box button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #764ba2;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .message-box button:hover {
+      background: #667eea;
+    }
+
+    .message-box button:active {
+      transform: scale(0.97);
+    }
+
+    .chat-container > a {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #764ba2;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .chat-container > a:hover {
+      text-decoration: underline;
+    }
+
+    .chat-container > br {
+      display: none;
+    }
+  </style>
+</head>
+<body onload="loadMessages()">
+
+<div class="chat-container">
+  <h2 id="chatUserName">Chat</h2>
+
+  <div id="messages" class="messages"></div>
+
+  <div class="message-box">
+    
+    
+  <input type="text" id="messageInput" placeholder="Type a message...">
+  <div id="typingIndicator"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+  <script>
+  const roomId = "room1";
+  const currentUserId = "user123"; // replace with actual logged-in user
+
+  let lastSent = 0;
+  const THROTTLE_MS = 1500;
+
+  // Send a typing ping, throttled so we don't fire on every keystroke
+  $('#messageInput').on('input', function() {
+      const now = Date.now();
+      if (now - lastSent < THROTTLE_MS) return;
+      lastSent = now;
+
+      $.ajax({
+          url: 'http://localhost:8081/api/typing',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ roomId: roomId, userId: currentUserId }),
+		  headers: {
+		  	     "Authorization": "Bearer " + localStorage.getItem("token")
+		  	   }
+      });
+  });
+
+  // Clear typing status when message is sent (e.g. on Enter or send button)
+  function clearTyping() {
+      $.ajax({
+          url: 'http://localhost:8081/api/typing',
+          method: 'DELETE',
+          contentType: 'application/json',
+          data: JSON.stringify({ roomId: roomId, userId: currentUserId }),
+		  headers: {
+		  	     "Authorization": "Bearer " + localStorage.getItem("token")
+		  	   }
+      });
+  }
+
+  // Poll every 1.5s to see who else is typing
+
+  setInterval(function() {
+      $.ajax({
+          url: 'http://localhost:8081/api/typing/' + roomId,
+          method: 'GET',
+          data: { currentUserId: currentUserId },
+          headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token') // adjust key name to match what you use elsewhere
+          },
+          success: function(response) {
+              const typingUsers = response.typingUsers;
+              if (typingUsers.length === 0) {
+                  $('#typingIndicator').text('');
+              } else if (typingUsers.length === 1) {
+                  $('#typingIndicator').text(typingUsers[0] + ' is typing...');
+              } else {
+                  $('#typingIndicator').text(typingUsers.length + ' people are typing...');
+              }
+          }
+      });
+  }, 1500);
+  
+  
+  </script>
+  
+  <button onclick="sendMessage()">Send</button>
+    </div> 
+  
+  
+  
+  
+  
+  
+  
+  <a href="users.html">Back</a>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="chat.js"></script>
+</body>
+</html>
