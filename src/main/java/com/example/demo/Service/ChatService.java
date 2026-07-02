@@ -5,11 +5,14 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.Entity.ChatMessageEntity;
+import com.example.demo.Entity.ChatMessageEntity.MessageStatus;
 import com.example.demo.controllers.FriendController;
 import com.example.demo.repository.ChatMessageRepository;
+import com.example.demo.repository.UserRepository;
 
 @Service			//creates bean automatically
 public class ChatService {
@@ -17,19 +20,81 @@ public class ChatService {
 	
 	private static final Logger logger = LogManager.getLogger(ChatService.class);
 
+	// Inject NotificationService and UserRepository inside ChatService:
+	
+    private final NotificationService notificationService;
+	
+    private final UserRepository userRepository;
+	
     private final ChatMessageRepository chatRepository;
 
-    public ChatService(ChatMessageRepository chatRepository) {		//injects repository bean by constructor DI
-        this.chatRepository = chatRepository;
+   
+    
+ 
+    public ChatService(NotificationService notificationService, UserRepository userRepository,
+			ChatMessageRepository chatRepository) {
+		super();
+		this.notificationService = notificationService;
+		this.userRepository = userRepository;
+		this.chatRepository = chatRepository;
+	}
+
+    
+ // Mark messages sent by friendId to userId as READ
+    public void markMessagesAsRead(Long userId, Long friendId) {
+        List<ChatMessageEntity> unreadMessages = chatRepository.findBySenderIdAndReceiverIdAndStatusNot(
+                friendId, userId, MessageStatus.READ
+        );
+        for (ChatMessageEntity msg : unreadMessages) {
+            msg.setStatus(MessageStatus.READ);
+        }
+        chatRepository.saveAll(unreadMessages);
+        // Clear Redis cache so changes are synced instantly
+       // evictCache(userId, friendId);
+    }
+    // Mark messages sent to userId as DELIVERED
+    public void markMessagesAsDelivered(Long userId) {
+        List<ChatMessageEntity> sentMessages = chatRepository.findByReceiverIdAndStatus(
+                userId, MessageStatus.SENT
+        );
+        for (ChatMessageEntity msg : sentMessages) {
+            msg.setStatus(MessageStatus.DELIVERED);
+            // Evict cache for each thread
+           // evictCache(msg.getSenderId(), msg.getReceiverId());
+        }
+        chatRepository.saveAll(sentMessages);
+    }
+    
+    
+    
+
+	public ChatMessageEntity sendMessage(ChatMessageEntity chatMessage) {
+        chatMessage.setSentAt(LocalDateTime.now());
+        ChatMessageEntity savedMessage = chatRepository.save(chatMessage);
+
+        // Get sender name to render on user screen
+        String senderName = userRepository.findById(chatMessage.getSenderId())
+                                          .map(user -> user.getName())
+                                          .orElse("Connectify User");
+
+        try {
+            notificationService.sendPushNotification(
+                chatMessage.getReceiverId(),
+                "New Message from " + senderName,
+                chatMessage.getMessage()
+            );
+        } catch(Exception e) {
+            logger.error("Could not trigger FCM push notification to target user.", e);
+        }
+
+        return savedMessage;
     }
 
     
-    
-    
-    public ChatMessageEntity sendMessage(ChatMessageEntity chatMessage) {
-        chatMessage.setSentAt(LocalDateTime.now());//Adds current time.
-        return chatRepository.save(chatMessage);//methos of JPArepository that saves in DB an returns saved entity.
-    }
+//    public ChatMessageEntity sendMessage(ChatMessageEntity chatMessage) {
+//        chatMessage.setSentAt(LocalDateTime.now());//Adds current time.
+//        return chatRepository.save(chatMessage);//methos of JPArepository that saves in DB an returns saved entity.
+//    }
 
     
     

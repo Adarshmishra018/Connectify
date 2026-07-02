@@ -19,6 +19,26 @@ public class ChatMessageEntity {
 
 	    private LocalDateTime sentAt;
 
+
+
+	    
+	 // Define Message Status Enum
+	    public enum MessageStatus {
+	        SENT, DELIVERED, READ
+	    }
+	    // Add this field inside ChatMessageEntity:
+	    @Enumerated(EnumType.STRING)
+	    private MessageStatus status = MessageStatus.SENT;
+	    // Add Getter & Setter:
+	    public MessageStatus getStatus() {
+	        return status;
+	    }
+	    public void setStatus(MessageStatus status) {
+	        this.status = status;
+	    }
+	    
+	    
+	    
 	    public ChatMessageEntity() {}
 
 	    public ChatMessageEntity(Long senderId, Long receiverId, String message) {

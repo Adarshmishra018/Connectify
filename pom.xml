@@ -45,6 +45,21 @@
     </exclusions>
 </dependency>
 
+	<dependency>
+	    <groupId>com.google.firebase</groupId>
+	    <artifactId>firebase-admin</artifactId>
+	    <version>9.2.0</version>
+	</dependency>
+
+		
+		<!-- Explicit Google Auth Library to resolve GoogleCredentials -->
+		<dependency>
+		    <groupId>com.google.auth</groupId>
+		    <artifactId>google-auth-library-oauth2-http</artifactId>
+		    <version>1.23.0</version>
+		</dependency>
+
+
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-log4j2</artifactId>

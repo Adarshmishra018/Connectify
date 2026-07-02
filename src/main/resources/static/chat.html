@@ -30,6 +30,280 @@
       display: flex;
       flex-direction: column;
       padding: 20px;
+      position: relative; /* Essential for absolute positioning of emoji picker */
+    }
+
+    #chatUserName {
+      text-align: center;
+      color: #333;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #eee;
+      margin-bottom: 12px;
+      font-size: 22px;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px;
+      background: #f7f7fb;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
+    .messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+
+    .messages .msg {
+      max-width: 75%;
+      padding: 8px 12px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.4;
+      word-wrap: break-word;
+    }
+
+    .messages .msg.sent {
+      align-self: flex-end;
+      background: #764ba2;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .messages .msg.received {
+      align-self: flex-start;
+      background: #e6e6ee;
+      color: #333;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message-box {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    #messageInput {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    #messageInput:focus {
+      border-color: #764ba2;
+    }
+
+    .message-box button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      background: #764ba2;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.1s ease;
+    }
+
+    .message-box button:hover {
+      background: #667eea;
+    }
+
+    .message-box button:active {
+      transform: scale(0.97);
+    }
+
+    .chat-container > a {
+      display: block;
+      text-align: center;
+      margin-top: 15px;
+      color: #764ba2;
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .chat-container > a:hover {
+      text-decoration: underline;
+    }
+
+    .chat-container > br {
+      display: none;
+    }
+  </style>
+
+  <!-- Firebase compatibility scripts for Push Notifications -->
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script>
+</head>
+<body onload="loadMessages()">
+
+<div class="chat-container">
+  <h2 id="chatUserName">Chat</h2>
+
+  <div id="messages" class="messages"></div>
+
+  <div class="message-box">
+    <!-- File Input (Hidden) & Trigger Button -->
+    <input type="file" id="fileInput" style="display: none;" onchange="uploadFileAndSend(this.files[0])">
+    <button type="button" onclick="document.getElementById('fileInput').click()" style="padding: 10px; background: #e6e6ee; color: #333; border-radius: 8px; border: none; cursor: pointer;" title="Attach File">📎</button>
+
+    <!-- Emoji Trigger Button & Picker Container -->
+    <button type="button" id="emojiBtn" style="padding: 10px; background: #e6e6ee; color: #333; border-radius: 8px; border: none; cursor: pointer;" title="Insert Emoji">😀</button>
+    <div id="emojiPicker" style="display: none; position: absolute; bottom: 80px; right: 20px; z-index: 100;"></div>
+
+    <input type="text" id="messageInput" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+  </div> 
+
+  <div id="typingIndicator" style="font-size: 12px; color: #666; margin-top: 5px; height: 15px;"></div>
+
+  <a href="users.html">Back</a>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script>
+  const roomId = "room1";
+  const currentUserId = localStorage.getItem("userId") || "user123";
+
+  let lastSent = 0;
+  const THROTTLE_MS = 1500;
+
+  // Send a typing indicator status
+  $('#messageInput').on('input', function() {
+      const now = Date.now();
+      if (now - lastSent < THROTTLE_MS) return;
+      lastSent = now;
+
+      $.ajax({
+          url: 'http://localhost:8081/api/typing',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ roomId: roomId, userId: currentUserId }),
+		  headers: {
+		  	     "Authorization": "Bearer " + localStorage.getItem("token")
+		  	   }
+      });
+  });
+
+  // Clear typing status
+  function clearTyping() {
+      $.ajax({
+          url: 'http://localhost:8081/api/typing',
+          method: 'DELETE',
+          contentType: 'application/json',
+          data: JSON.stringify({ roomId: roomId, userId: currentUserId }),
+		  headers: {
+		  	     "Authorization": "Bearer " + localStorage.getItem("token")
+		  	   }
+      });
+  }
+
+  // Poll to show who else is typing
+  setInterval(function() {
+      $.ajax({
+          url: 'http://localhost:8081/api/typing/' + roomId,
+          method: 'GET',
+          data: { currentUserId: currentUserId },
+          headers: {
+              'Authorization': 'Bearer ' + localStorage.getItem('token')
+          },
+          success: function(response) {
+              const typingUsers = response.typingUsers;
+              if (!typingUsers || typingUsers.length === 0) {
+                  $('#typingIndicator').text('');
+              } else if (typingUsers.length === 1) {
+                  $('#typingIndicator').text(typingUsers[0] + ' is typing...');
+              } else {
+                  $('#typingIndicator').text(typingUsers.length + ' people are typing...');
+              }
+          }
+      });
+  }, 1500);
+</script>
+
+<!-- Emoji Picker Picker initialization module -->
+<script type="module">
+  import { Picker } from 'https://cdn.jsdelivr.net/npm/emoji-mart@5.5.2/+esm'
+  
+  const pickerContainer = document.getElementById('emojiPicker');
+  const messageInput = document.getElementById('messageInput');
+  
+  const picker = new Picker({
+    onEmojiSelect: (emoji) => {
+      messageInput.value += emoji.native;
+      pickerContainer.style.display = 'none';
+      messageInput.focus();
+    }
+  });
+  
+  pickerContainer.appendChild(picker);
+  
+  document.getElementById('emojiBtn').addEventListener('click', (e) => {
+      e.stopPropagation();
+      pickerContainer.style.display = pickerContainer.style.display === 'none' ? 'block' : 'none';
+  });
+
+  document.addEventListener('click', () => {
+      pickerContainer.style.display = 'none';
+  });
+  pickerContainer.addEventListener('click', (e) => e.stopPropagation());
+</script>
+
+<script src="jquery.js"></script>
+<script src="chat.js"></script>
+</body>
+</html>
+
+
+
+
+
+<!--<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .chat-container {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 500px;
+      height: 600px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
     }
 
     #chatUserName {
@@ -232,7 +506,7 @@
   <a href="users.html">Back</a>
 </div>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="jquery.js"></script>
 <script src="chat.js"></script>
 </body>
-</html>
+</html>-->
