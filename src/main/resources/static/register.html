@@ -1,4 +1,48 @@
+
 <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Connectify</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="brand-header">
+    <svg class="brand-logo-svg" viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      <circle cx="12" cy="10" r="2" fill="currentColor"></circle>
+    </svg>
+    <h2>Create Account</h2>
+    <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Join the chat network today</p>
+  </div>
+
+  <input type="text" id="regName" placeholder="Full Name">
+  <input type="email" id="regEmail" placeholder="Email Address">
+  <input type="password" id="regPassword" placeholder="Password">
+
+  <button onclick="registerUser()">
+    <span>Register</span>
+  </button>
+
+  <div style="text-align: center;">
+    <a href="login.html" class="back-link-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Back to Login
+    </a>
+  </div>
+</div>
+
+<script src="jquery.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
+
+
+
+
+<!--<!DOCTYPE html>
 <html>
 <head>
   <title>Register</title>
@@ -109,4 +153,4 @@
 <script src="jquery.js"></script>
 <script src="script.js"></script>
 </body>
-</html>
+</html>-->

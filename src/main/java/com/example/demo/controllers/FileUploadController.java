@@ -18,6 +18,35 @@ public class FileUploadController {
     public FileUploadController(FileStorageService fileStorageService) {
         this.fileStorageService = fileStorageService;
     }
+    
+    /**
+     * Serves uploaded files securely from the uploads directory.
+     */
+    @GetMapping("/download/{fileName:.+}")
+    public ResponseEntity<org.springframework.core.io.Resource> downloadFile(@PathVariable String fileName) {
+        try {
+            // Resolve the path to the file in the "uploads" directory
+            java.nio.file.Path filePath = java.nio.file.Paths.get("uploads").resolve(fileName).normalize();
+            org.springframework.core.io.Resource resource = new org.springframework.core.io.UrlResource(filePath.toUri());
+            if (resource.exists()) {
+                // Determine file content type automatically
+                String contentType = java.nio.file.Files.probeContentType(filePath);
+                if (contentType == null) {
+                    contentType = "application/octet-stream";
+                }
+                return ResponseEntity.ok()
+                        .contentType(org.springframework.http.MediaType.parseMediaType(contentType))
+                        .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + resource.getFilename() + "\"")
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().build();
+        }
+    }
+    
+    
 
     @PostMapping("/upload")
     public ResponseEntity<Map<String, String>> uploadFile(@RequestParam("file") MultipartFile file) {

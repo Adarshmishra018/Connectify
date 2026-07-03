@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,42 +26,40 @@ public class UserService {
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final StringRedisTemplate redisTemplate;
-
-    public UserService(UserRepository userRepository,JwtUtil jwtUtil,StringRedisTemplate redisTemplate) {//Constructor DI
+    
+    // 2. Instantiate BCryptPasswordEncoder
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    public UserService(UserRepository userRepository, JwtUtil jwtUtil, StringRedisTemplate redisTemplate) {
         this.userRepository = userRepository;
         this.jwtUtil = jwtUtil;
         this.redisTemplate = redisTemplate;
     }
-
     public UserEntity registerUser(UserEntity user) {
-        return userRepository.save(user);//save user and return entity
+        // 3. Hash the password before saving it to the DB
+        String hashedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashedPassword);
+        return userRepository.save(user);
     }
-
     public ResponseEntity<?> loginUser(UserEntity user) {
-        UserEntity existingUser = userRepository.findByEmail(user.getEmail());//existingUser has all data from login
-        if (existingUser == null) {//check if user exists
+        UserEntity existingUser = userRepository.findByEmail(user.getEmail());
+        if (existingUser == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body("User not found");
         }
-
-        if (!existingUser.getPassword()
-                .equals(user.getPassword())) {
-
+        // 4. Compare the raw password from login request with hashed password in DB
+        if (!passwordEncoder.matches(user.getPassword(), existingUser.getPassword())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid password");
         }
-
         String token = jwtUtil.generateToken(
                 existingUser.getId(),
                 existingUser.getEmail()
         );
-
         redisTemplate.opsForValue().set(
                 "LOGIN_USER_" + existingUser.getId(),
                 token,
                 Duration.ofMinutes(30)
         );
-
         return ResponseEntity.ok(
                 new LoginResponse(
                         existingUser.getId(),
@@ -70,19 +69,79 @@ public class UserService {
                 )
         );
     }
-
     public ResponseEntity<?> logout(String authHeader) {
-
         String token = authHeader.substring(7);
-
         Long userId = jwtUtil.extractUserId(token);
-
         redisTemplate.delete("LOGIN_USER_" + userId);
-
         return ResponseEntity.ok("Logged out successfully");
     }
-
     public List<UserEntity> getAllUsers() {
         return userRepository.findAll();
     }
+	
+	
+//
+//    private final UserRepository userRepository;
+//    private final JwtUtil jwtUtil;
+//    private final StringRedisTemplate redisTemplate;
+//
+//    public UserService(UserRepository userRepository,JwtUtil jwtUtil,StringRedisTemplate redisTemplate) {//Constructor DI
+//        this.userRepository = userRepository;
+//        this.jwtUtil = jwtUtil;
+//        this.redisTemplate = redisTemplate;
+//    }
+//
+//    public UserEntity registerUser(UserEntity user) {
+//        return userRepository.save(user);//save user and return entity
+//    }
+//
+//    public ResponseEntity<?> loginUser(UserEntity user) {
+//        UserEntity existingUser = userRepository.findByEmail(user.getEmail());//existingUser has all data from login
+//        if (existingUser == null) {//check if user exists
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//                    .body("User not found");
+//        }
+//
+//        if (!existingUser.getPassword()
+//                .equals(user.getPassword())) {
+//
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+//                    .body("Invalid password");
+//        }
+//
+//        String token = jwtUtil.generateToken(
+//                existingUser.getId(),
+//                existingUser.getEmail()
+//        );
+//
+//        redisTemplate.opsForValue().set(
+//                "LOGIN_USER_" + existingUser.getId(),
+//                token,
+//                Duration.ofMinutes(30)
+//        );
+//
+//        return ResponseEntity.ok(
+//                new LoginResponse(
+//                        existingUser.getId(),
+//                        existingUser.getName(),
+//                        existingUser.getEmail(),
+//                        token
+//                )
+//        );
+//    }
+//
+//    public ResponseEntity<?> logout(String authHeader) {
+//
+//        String token = authHeader.substring(7);
+//
+//        Long userId = jwtUtil.extractUserId(token);
+//
+//        redisTemplate.delete("LOGIN_USER_" + userId);
+//
+//        return ResponseEntity.ok("Logged out successfully");
+//    }
+//
+//    public List<UserEntity> getAllUsers() {
+//        return userRepository.findAll();
+//    }
 }

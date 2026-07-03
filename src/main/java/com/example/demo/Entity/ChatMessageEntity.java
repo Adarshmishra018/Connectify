@@ -14,8 +14,10 @@ public class ChatMessageEntity {
 	    private Long senderId;
 	    private Long receiverId;
 
-	    @Column(length = 1000)
+	    @Column(length = 2000) // Encrypted text is slightly longer
+	    @jakarta.persistence.Convert(converter = E2eeMessageConverter.class)
 	    private String message;
+
 
 	    private LocalDateTime sentAt;
 
