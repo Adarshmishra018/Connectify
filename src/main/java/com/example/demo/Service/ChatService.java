@@ -99,15 +99,25 @@ public class ChatService {
     
     
     
-    public List<ChatMessageEntity> getChatMessages(Long senderId, Long receiverId) {//JPA converts each row into a ChatMessageEntity object and puts them into a List.
-        return chatRepository.findBySenderIdAndReceiverIdOrReceiverIdAndSenderId(	//fetches Both sides of conversation and return lists of objects
+  public List<ChatMessageEntity> getChatMessages(Long senderId, Long receiverId) {//JPA converts each row into a ChatMessageEntity object and puts them into a List.
+       return chatRepository.findBySenderIdAndReceiverIdOrReceiverIdAndSenderId(	//fetches Both sides of conversation and return lists of objects
+               senderId,
+               receiverId,
                 senderId,
-                receiverId,
-                senderId,
-                receiverId
+               receiverId
         );
     }
-
+	public List<ChatMessageEntity> getChatMessagesPaginated(Long senderId, Long receiverId, int page, int size) {
+	    org.springframework.data.domain.Pageable pageable = 
+	        org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by("sentAt").descending());
+	    
+	    org.springframework.data.domain.Page<ChatMessageEntity> messagePage = 
+	        chatRepository.findBySenderIdAndReceiverIdOrReceiverIdAndSenderId(
+	            senderId, receiverId, senderId, receiverId, pageable
+	        );
+	        
+	    return messagePage.getContent();
+	}
     
     
     public List<ChatMessageEntity> getInbox(Long userId) {//fetch from DB & return list of objects

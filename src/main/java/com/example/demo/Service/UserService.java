@@ -79,7 +79,42 @@ public class UserService {
         return userRepository.findAll();
     }
 	
-	
+    public boolean updatePassword(String email, String newPassword) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            return false;
+        }
+        user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+        return true;
+    }
+    public ResponseEntity<?> loginOrRegisterOAuthUser(String email, String name) {
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            user = new UserEntity();
+            user.setEmail(email);
+            user.setName(name);
+            user.setPassword(passwordEncoder.encode(java.util.UUID.randomUUID().toString()));
+            user = userRepository.save(user);
+        }
+
+        String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        redisTemplate.opsForValue().set(
+                "LOGIN_USER_" + user.getId(),
+                token,
+                java.time.Duration.ofMinutes(30)
+        );
+
+        return ResponseEntity.ok(
+                new LoginResponse(
+                        user.getId(),
+                        user.getName(),
+                        user.getEmail(),
+                        token
+                )
+        );
+    }
+
 //
 //    private final UserRepository userRepository;
 //    private final JwtUtil jwtUtil;

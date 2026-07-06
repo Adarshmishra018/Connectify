@@ -37,14 +37,34 @@ public class ChatController {
     /**
      * Fetches chat history between sender and receiver.
      */
+//    @GetMapping("/messages")
+//    public ResponseEntity<List<ChatMessageEntity>> getChatMessages(
+//            @RequestParam Long senderId,
+//            @RequestParam Long receiverId) {
+//        logger.debug("Fetching chat messages between sender {} and receiver {}", senderId, receiverId);
+//        List<ChatMessageEntity> messages = chatService.getChatMessages(senderId, receiverId);
+//        return ResponseEntity.ok(messages);
+//    }
+    
+    
+    
     @GetMapping("/messages")
     public ResponseEntity<List<ChatMessageEntity>> getChatMessages(
             @RequestParam Long senderId,
-            @RequestParam Long receiverId) {
+            @RequestParam Long receiverId,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
         logger.debug("Fetching chat messages between sender {} and receiver {}", senderId, receiverId);
-        List<ChatMessageEntity> messages = chatService.getChatMessages(senderId, receiverId);
+        List<ChatMessageEntity> messages;
+        if (page != null) {
+            int pageSize = (size != null) ? size : 20;
+            messages = chatService.getChatMessagesPaginated(senderId, receiverId, page, pageSize);
+        } else {
+            messages = chatService.getChatMessages(senderId, receiverId);
+        }
         return ResponseEntity.ok(messages);
     }
+
     /**
      * Fetches the list of last messages (inbox) for a user.
      */

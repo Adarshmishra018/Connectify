@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forgot Password - Connectify</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="brand-header">
+    <svg class="brand-logo-svg" viewBox="0 0 24 24" width="48" height="48" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+      <circle cx="12" cy="10" r="2" fill="currentColor"></circle>
+    </svg>
+    <h2 id="formTitle">Reset Password</h2>
+    <p id="formSubtitle" style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Recover your Connectify account</p>
+  </div>
+
+  <div id="forgotPasswordSection">
+    <!-- Step 1: Request code -->
+    <div id="forgotStep1">
+      <input type="email" id="forgotEmail" placeholder="Enter your email address">
+      <button onclick="sendResetCode()">
+        <span>Send Verification Code</span>
+      </button>
+    </div>
+
+    <!-- Step 2: Verification code input -->
+    <div id="forgotStep2" style="display: none;">
+      <input type="text" id="forgotCode" placeholder="Enter 6-Digit Verification Code">
+      <button onclick="verifyResetCode()">
+        <span>Verify Code</span>
+      </button>
+    </div>
+
+    <!-- Step 3: New password input -->
+    <div id="forgotStep3" style="display: none;">
+      <input type="password" id="newPassword" placeholder="Enter New Password">
+      <input type="password" id="confirmNewPassword" placeholder="Confirm New Password">
+      <button onclick="resetUserPassword()">
+        <span>Reset Password</span>
+      </button>
+    </div>
+
+    <div style="margin-top: 20px; text-align: center; font-size: 14px;">
+		<a href="login.html" style="color: #6366f1; text-decoration: none; font-weight: 500;">Sign in to your account</a>
+    </div>
+  </div>
+</div>
+
+<script src="jquery.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

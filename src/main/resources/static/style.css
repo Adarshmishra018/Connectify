@@ -18,7 +18,8 @@ body {
 }
 
 /* Glassmorphism Container */
-.container, .chat-container {
+.container,
+.chat-container {
   background: rgba(30, 41, 59, 0.7);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);

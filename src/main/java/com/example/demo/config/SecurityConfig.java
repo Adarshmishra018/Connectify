@@ -38,7 +38,8 @@ public class SecurityConfig {
 					            "/script.js",
 					            "/users.js",
 					            "/*.html",
-								
+					            "/api/auth/forgot-password/**",
+					            "/api/auth/google-login",
 								"/",
 								"/*.html",
 								"/*.css",

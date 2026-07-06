@@ -52,6 +52,8 @@ public class JwtFilter extends OncePerRequestFilter {
                 path.equals("/api/auth/login") ||
                 path.equals("/api/auth/register") ||
                 path.endsWith(".html") ||
+                path.startsWith("/api/auth/forgot-password")||
+                path.equals("/api/auth/google-login")||
                 path.endsWith(".css") ||
                 path.endsWith(".js") ||
                 path.equals("/favicon.ico")||path.startsWith("/.well-known") ) {

@@ -1,3 +1,7 @@
+let currentPage = 0;
+let hasMoreMessages = true;
+let isLoadingMessages = false;
+
 // Session verification check
 function checkSession() {
   const userId = localStorage.getItem("userId");
@@ -595,6 +599,15 @@ function setupPushNotifications() {
 
 // Bind enter key, setup global notifications polling on document ready
 $(document).ready(function() {
+	$("#messages").on("scroll", function() {
+	  if ($(this).scrollTop() === 0) {
+	    if (hasMoreMessages && !isLoadingMessages) {
+	      currentPage++;
+	      fetchMessagesPage(currentPage, false);
+	    }
+	  }
+	});
+	
   $('#messageInput').on('keydown', function(event) {
     if (event.key === 'Enter') {
       event.preventDefault();

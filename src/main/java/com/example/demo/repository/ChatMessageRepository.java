@@ -12,7 +12,13 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessageEntity, 
 
 	//Spring Data JPA generates SQL,Repository returns Saved Entity,Controller returns it as JSON.
 	
-	
+	org.springframework.data.domain.Page<ChatMessageEntity> findBySenderIdAndReceiverIdOrReceiverIdAndSenderId(
+	        Long senderId,
+	        Long receiverId,
+	        Long receiverId2,
+	        Long senderId2,
+	        org.springframework.data.domain.Pageable pageable
+	);
 	    List<ChatMessageEntity> findBySenderIdAndReceiverIdOrReceiverIdAndSenderId(//fetches data from DB saves into entity and return list of objects
 	            Long senderId,
 	            Long receiverId,
