@@ -21,6 +21,40 @@ public class ChatMessageEntity {
 
 	    private LocalDateTime sentAt;
 
+	 // --- New Fields inside ChatMessageEntity ---
+
+	    private boolean deletedBySender = false;    // For "Delete for Me" (Sender)
+	    private boolean deletedByReceiver = false;  // For "Delete for Me" (Receiver)
+	    private boolean deletedForEveryone = false; // For "Delete for Everyone"
+
+	    private boolean isEdited = false;           // Tracks if message was edited
+	    private LocalDateTime editedAt;             // Tracks when it was edited
+
+	    private boolean viewOnce = false;           // For "View Once / Self-Destruct"
+	    private boolean viewed = false;             // Tracks if the receiver has viewed it
+
+	    // --- Getters & Setters ---
+
+	    public boolean isDeletedBySender() { return deletedBySender; }
+	    public void setDeletedBySender(boolean deletedBySender) { this.deletedBySender = deletedBySender; }
+
+	    public boolean isDeletedByReceiver() { return deletedByReceiver; }
+	    public void setDeletedByReceiver(boolean deletedByReceiver) { this.deletedByReceiver = deletedByReceiver; }
+
+	    public boolean isDeletedForEveryone() { return deletedForEveryone; }
+	    public void setDeletedForEveryone(boolean deletedForEveryone) { this.deletedForEveryone = deletedForEveryone; }
+
+	    public boolean isEdited() { return isEdited; }
+	    public void setEdited(boolean edited) { isEdited = edited; }
+
+	    public LocalDateTime getEditedAt() { return editedAt; }
+	    public void setEditedAt(LocalDateTime editedAt) { this.editedAt = editedAt; }
+
+	    public boolean isViewOnce() { return viewOnce; }
+	    public void setViewOnce(boolean viewOnce) { this.viewOnce = viewOnce; }
+
+	    public boolean isViewed() { return viewed; }
+	    public void setViewed(boolean viewed) { this.viewed = viewed; }
 
 
 	    

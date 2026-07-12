@@ -15,7 +15,6 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/typing")
 // In production, configure allowed origins via application properties.
-@CrossOrigin(origins = "${app.cors.allowed-origins:*}") 
 public class TypingController {
     private final TypingService typingService;
     // Standard Constructor Injection

@@ -16,7 +16,6 @@ import java.util.Random;
 
 @RestController
 @RequestMapping("/api/auth/forgot-password")
-@CrossOrigin(origins = "*")
 public class ForgotPasswordController {
 
     @Autowired

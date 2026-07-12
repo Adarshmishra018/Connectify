@@ -229,7 +229,7 @@ function pollGlobalInboxForNotifications() {
           if (!notifiedGlobalInboxIds.has(msg.id)) {
             notifiedGlobalInboxIds.add(msg.id);
 
-            let alertText = msg.message;
+            let alertText = msg.viewOnce ? "Sent a View Once message" : msg.message;
             if (alertText && alertText.startsWith('{"fileUrl"')) {
               try {
                 const fileObj = JSON.parse(alertText);
@@ -316,9 +316,32 @@ function loadMessages() {
                               </div>`;
           }
 
+          // Render view once unread placeholder
+          if (msg.viewOnce && !msg.viewed) {
+             if (cssClass === "received") {
+                 messageContent = `<span style="cursor: pointer;" onclick="openViewOnceMessage(${msg.id})">👁️ Click to view (View Once)</span>`;
+             } else {
+                 messageContent = `👁️ View Once Message (Sent)`;
+             }
+          }
+
+          // Build message container with custom context menu options
           html += `
-            <div class="msg ${cssClass}">
-              ${messageContent}
+            <div class="msg ${cssClass} ${msg.viewOnce && !msg.viewed && cssClass === 'received' ? 'view-once-unread' : ''}" id="msg-${msg.id}">
+              <span class="msg-text">${messageContent}</span>
+              ${msg.edited ? `<span style="font-size: 9px; opacity: 0.6; margin-left: 6px;" title="Edited at ${msg.editedAt}">(edited)</span>` : ''}
+              
+              <!-- Context Menu Trigger button -->
+              <span class="msg-menu-btn" onclick="toggleMsgMenu(event, ${msg.id})">▼</span>
+              
+              <!-- Action Dropdown Menu -->
+              <div class="msg-menu" id="menu-${msg.id}" style="display: none;">
+                ${cssClass === "sent" && !msg.deletedForEveryone && !(msg.viewOnce && !msg.viewed) ? `
+                   <span onclick="startEditMessage(${msg.id}, '${msg.message.replace(/'/g, "\\'")}')">✏️ Edit</span>
+                   <span onclick="deleteForEveryone(${msg.id})">🗑️ Delete for everyone</span>
+                ` : ''}
+                <span onclick="deleteForMe(${msg.id})">🗑️ Delete for me</span>
+              </div>
             </div>
           `;
         });
@@ -330,7 +353,7 @@ function loadMessages() {
         if (lastMsg.senderId != senderId && !notifiedChatMsgIds.has(lastMsg.id)) {
           notifiedChatMsgIds.add(lastMsg.id);
 
-          let alertText = lastMsg.message;
+          let alertText = lastMsg.viewOnce ? "Sent a View Once message" : lastMsg.message;
           if (alertText && alertText.startsWith('{"fileUrl"')) {
             try {
               const fileObj = JSON.parse(alertText);
@@ -360,13 +383,18 @@ function loadMessages() {
     }
   });
 }
-
 function sendMessage() {
   if (!checkSession()) return;
+
+  if (editingMessageId !== null) {
+    saveEditMessage();
+    return;
+  }
 
   const senderId = localStorage.getItem("userId");
   const receiverId = localStorage.getItem("receiverId");
   const messageText = $("#messageInput").val();
+  const isViewOnce = $("#viewOnceCheckbox").is(":checked"); // Get checkbox value
 
   if (!messageText.trim()) {
     alert("Please type a message");
@@ -376,7 +404,8 @@ function sendMessage() {
   const chatMessage = {
     senderId: senderId,
     receiverId: receiverId,
-    message: messageText
+    message: messageText,
+    viewOnce: isViewOnce // Add the flag to the JSON body
   };
 
   $.ajax({
@@ -389,6 +418,7 @@ function sendMessage() {
     },
     success: function(response) {
       $("#messageInput").val("");
+      $("#viewOnceCheckbox").prop("checked", false); // Uncheck after sending
       clearTyping();
       loadMessages();
     },
@@ -631,6 +661,107 @@ $(document).ready(function() {
 });
 
 
+// Global tracking for the message ID currently being edited
+let editingMessageId = null;
+
+// Toggle visibility of the Edit/Delete dropdown menu
+function toggleMsgMenu(event, msgId) {
+    event.stopPropagation();
+    // Close other menus first
+    $(".msg-menu").not(`#menu-${msgId}`).hide();
+    $(`#menu-${msgId}`).toggle();
+}
+
+// Close menus when clicking outside
+$(document).on("click", function() {
+    $(".msg-menu").hide();
+});
+
+// Click action to reveal View Once message contents and call backend to expire it
+function openViewOnceMessage(msgId) {
+    const senderId = localStorage.getItem("userId");
+    const foundMsg = allMessages.find(m => m.id === msgId);
+    const originalContent = foundMsg ? foundMsg.message : "Message content not found";
+    
+    alert(`View Once message contents:\n\n"${originalContent}"`);
+    
+    $.ajax({
+        url: `http://localhost:8081/api/auth/messages/${msgId}/view-once-open?userId=${senderId}`,
+        type: "POST",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        success: function() {
+            loadMessages(); // Refresh UI to remove/mark the expired message
+        }
+    });
+}
+
+// Put the UI in edit mode
+function startEditMessage(msgId, currentText) {
+    editingMessageId = msgId;
+    $("#messageInput").val(currentText).focus();
+    
+    // Change Send Button action to Edit action temporarily
+    $("#sendBtn").attr("onclick", `saveEditMessage()`);
+    $("#sendBtn").html("Save");
+}
+
+// Submit edit change request to the backend
+function saveEditMessage() {
+    const senderId = localStorage.getItem("userId");
+    const updatedText = $("#messageInput").val();
+
+    if (!updatedText.trim()) return;
+
+    $.ajax({
+        url: `http://localhost:8081/api/auth/messages/${editingMessageId}/edit?senderId=${senderId}`,
+        type: "PUT",
+        contentType: "application/json",
+        data: JSON.stringify({ message: updatedText }),
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        success: function() {
+            // Reset input field and send button mapping
+            $("#messageInput").val("");
+            $("#sendBtn").attr("onclick", "sendMessage()");
+            $("#sendBtn").html('<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>');
+            editingMessageId = null;
+            loadMessages();
+        }
+    });
+}
+
+// Trigger Delete for Me
+function deleteForMe(msgId) {
+    const userId = localStorage.getItem("userId");
+    $.ajax({
+        url: `http://localhost:8081/api/auth/messages/${msgId}/delete-for-me?userId=${userId}`,
+        type: "POST",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        success: function() {
+            loadMessages();
+        }
+    });
+}
+
+// Trigger Delete for Everyone
+function deleteForEveryone(msgId) {
+    const senderId = localStorage.getItem("userId");
+    $.ajax({
+        url: `http://localhost:8081/api/auth/messages/${msgId}/delete-for-everyone?senderId=${senderId}`,
+        type: "POST",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("token")
+        },
+        success: function() {
+            loadMessages();
+        }
+    });
+}
 
 
 

@@ -93,7 +93,7 @@ function pollInboxMessages() {
             const senderCard = $("#status-text-" + senderId).closest(".user-card");
             const senderName = senderCard.length ? senderCard.find(".user-card-name").text() : "Connectify User";
 
-            let alertText = msg.message;
+            let alertText = msg.viewOnce ? "Sent a View Once message" : msg.message;
             // Parse attachment details if it's formatted as JSON
             if (alertText && alertText.startsWith('{"fileUrl"')) {
               try {

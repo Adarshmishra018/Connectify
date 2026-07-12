@@ -29,6 +29,10 @@
 	</div>
 
 	
+	<button onclick="window.location.href='nearby.html'" style="background: linear-gradient(135deg, #a855f7, #ec4899); margin-top: 10px;">
+	  🔍 Find People Nearby
+	</button>
+	
 	
     <h3>Add Contact</h3>
     <div class="add-friend-section">
@@ -51,6 +55,7 @@
   </div>
 
   <script src="jquery.js"></script>
+  <script src="config.js"></script>
   <script src="users.js"></script>
 </body>
 </html>
@@ -58,145 +63,3 @@
 
 
 
-
-<!--<!DOCTYPE html>
-<html>
-<head>
-  <title>Users</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .container {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      padding: 30px 40px;
-      width: 100%;
-      max-width: 500px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 20px;
-      font-size: 26px;
-    }
-
-    h3 {
-      color: #444;
-      margin-bottom: 12px;
-      font-size: 18px;
-    }
-
-    .add-friend-section {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 25px;
-    }
-
-    #friendIdInput {
-      flex: 1;
-      padding: 10px 14px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-
-    #friendIdInput:focus {
-      border-color: #764ba2;
-    }
-
-    button {
-      padding: 10px 18px;
-      border: none;
-      border-radius: 8px;
-      background: #764ba2;
-      color: #fff;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.1s ease;
-    }
-
-    button:hover {
-      background: #667eea;
-    }
-
-    button:active {
-      transform: scale(0.97);
-    }
-
-    #userList {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-bottom: 25px;
-      max-height: 300px;
-      overflow-y: auto;
-    }
-
-    #userList::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    #userList::-webkit-scrollbar-thumb {
-      background: #ccc;
-      border-radius: 3px;
-    }
-
-    .logout-btn {
-      display: block;
-      width: 100%;
-      background: #e74c3c;
-    }
-
-    .logout-btn:hover {
-      background: #c0392b;
-    }
-
-    hr {
-      border: none;
-      border-top: 1px solid #eee;
-      margin: 20px 0;
-    }
-  </style>
-</head>
-<body onload="loadFriends()">
-
-  <div class="container">
-
-    <h3>Add Friend</h3>
-    <div class="add-friend-section">
-      <input type="number" id="friendIdInput" placeholder="Enter Friend User ID">
-      <button onclick="addFriend()">Add Friend</button>
-    </div>
-
-    <hr>
-
-    <h2>User List</h2>
-    <div id="userList"></div>
-
-    <button class="logout-btn" onclick="logout()">Logout</button>
-  </div>
-
-  <script src="jquery.js"></script>
-  <script src="users.js"></script>
-</body>
-</html>-->

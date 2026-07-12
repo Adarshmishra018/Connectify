@@ -44,9 +44,9 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         // Rest of your original doFilterInternal code starts below:
         String path = request.getServletPath();
-        logger.debug("Inside OncePerRequestFilter  path: {}", path);
+        System.out.println("[JwtFilter] Intercepting request path: " + path);
         
- 
+  
         // 2. Allow public endpoints to pass through without token validation
         if (path.equals("/") ||
                 path.equals("/api/auth/login") ||
@@ -56,16 +56,20 @@ public class JwtFilter extends OncePerRequestFilter {
                 path.equals("/api/auth/google-login")||
                 path.endsWith(".css") ||
                 path.endsWith(".js") ||
-                path.equals("/favicon.ico")||path.startsWith("/.well-known") ) {
+                path.equals("/favicon.ico") ||
+                path.startsWith("/.well-known") ||
+                path.equals("/signal")) {
 
+            System.out.println("[JwtFilter] Bypassed validation for: " + path);
             filterChain.doFilter(request, response);
             return;
         }
 
         String authHeader = request.getHeader("Authorization");
-        logger.debug("Inside OncePerRequestFilter authHeader: {}", authHeader);
+        System.out.println("[JwtFilter] Authorization header: " + authHeader + " for path: " + path);
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("[JwtFilter] REJECTED (Missing/Invalid Token) for: " + path);
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Missing token");
             return;

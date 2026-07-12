@@ -31,15 +31,15 @@ public class SecurityConfig {
 				.authorizeHttpRequests(auth -> auth
 
 						.requestMatchers(
-								
-					            "/favicon.ico",           // ← add this
-					            "/.well-known/**",        // ← add this
-					            "/style.css",
-					            "/script.js",
-					            "/users.js",
-					            "/*.html",
-					            "/api/auth/forgot-password/**",
-					            "/api/auth/google-login",
+
+								"/favicon.ico", // ← add this
+								"/.well-known/**", // ← add this
+								"/style.css",
+								"/script.js",
+								"/users.js",
+								"/*.html",
+								"/api/auth/forgot-password/**",
+								"/api/auth/google-login",
 								"/",
 								"/*.html",
 								"/*.css",

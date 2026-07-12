@@ -9,7 +9,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/status")
-@CrossOrigin(origins = "*")
 public class UserStatusController {
 
     private final UserStatusService userStatusService;
