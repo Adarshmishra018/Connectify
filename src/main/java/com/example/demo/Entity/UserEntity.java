@@ -16,6 +16,34 @@ public class UserEntity {
 	    private String email;
 	    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	    private String password;
+	   
+	    @Column(length = 500) // Allows for a longer bio
+	    private String bio;
+
+	    private String profilePictureUrl;
+
+	    // --- Add these Getters and Setters ---
+	    
+	    public String getBio() {
+	        return bio;
+	    }
+
+	    public void setBio(String bio) {
+	        this.bio = bio;
+	    }
+
+	    public String getProfilePictureUrl() {
+	        return profilePictureUrl;
+	    }
+
+	    public void setProfilePictureUrl(String profilePictureUrl) {
+	        this.profilePictureUrl = profilePictureUrl;
+	    }
+
+	    
+	    
+	    
+	    
 		public Long getId() {
 			return id;
 		}

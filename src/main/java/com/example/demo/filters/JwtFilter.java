@@ -58,6 +58,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 path.endsWith(".js") ||
                 path.equals("/favicon.ico") ||
                 path.startsWith("/.well-known") ||
+                path.startsWith("/api/files/download/")||
                 path.equals("/signal")) {
 
             System.out.println("[JwtFilter] Bypassed validation for: " + path);

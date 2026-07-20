@@ -119,8 +119,14 @@
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
       </button>
       <div class="chat-header-info" style="margin-left: 10px;">
-        <h2 id="chatUserName">Chat</h2>
-        <div id="typingIndicator"></div>
+<!--        <h2 id="chatUserName">Chat</h2>
+-->   
+<h2 id="chatUserName" onclick="showFriendProfile()" style="cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='#764ba2'" onmouseout="this.style.color='#333'" title="Click to view profile">Chat</h2>
+
+
+
+
+     <div id="typingIndicator"></div>
       </div>
     </div>
 
@@ -167,6 +173,32 @@
   </div>
 
 </div>
+
+
+
+
+<!-- Friend Profile Modal -->
+<div id="friendProfileModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2000; align-items: center; justify-content: center;">
+  <div style="background: white; padding: 25px; border-radius: 12px; width: 350px; text-align: center; position: relative;">
+    
+    <!-- Close Button -->
+    <button onclick="document.getElementById('friendProfileModal').style.display='none'" style="position: absolute; top: 10px; right: 15px; border: none; background: none; font-size: 18px; cursor: pointer; color: #888;">✕</button>
+    
+    <!-- Profile Image -->
+    <img id="friendProfileImg" src="https://via.placeholder.com/120" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #764ba2; margin-bottom: 15px;">
+    
+    <!-- Name and Email -->
+    <h3 id="friendProfileName" style="margin-bottom: 5px; color: #333;">User Name</h3>
+    <p id="friendProfileEmail" style="color: #666; font-size: 14px; margin-bottom: 15px;">email@example.com</p>
+    
+    <!-- Bio Box -->
+    <div style="background: #f7f7fb; padding: 15px; border-radius: 8px; text-align: left; min-height: 60px;">
+      <p id="friendProfileBio" style="font-size: 14px; color: #444; line-height: 1.5;"><i>No bio provided yet.</i></p>
+    </div>
+  </div>
+</div>
+
+
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script>
@@ -257,6 +289,9 @@
   });
   pickerContainer.addEventListener('click', (e) => e.stopPropagation());
 </script>
+
+
+
 
 <script src="jquery.js"></script>
 <script src="chat.js"></script>

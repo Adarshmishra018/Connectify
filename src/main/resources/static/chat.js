@@ -16,6 +16,56 @@ function checkSession() {
   return true;
 }
 
+
+
+
+
+// Fetch and display the friend's profile in the modal
+async function showFriendProfile() {
+    const receiverId = localStorage.getItem("receiverId");
+    const token = localStorage.getItem("token");
+    
+    if (!receiverId) return;
+
+    try {
+		const response = await fetch(`http://localhost:8081/api/auth/${receiverId}/profile`, {
+            method: 'GET',
+            headers: { 
+                'Authorization': `Bearer ${token}` 
+            }
+        });
+        
+        if (response.ok) {
+            const profile = await response.json();
+            
+            // Populate the modal with the fetched data
+            document.getElementById('friendProfileName').innerText = profile.name || 'Unknown User';
+            document.getElementById('friendProfileEmail').innerText = profile.email || '';
+            document.getElementById('friendProfileBio').innerText = profile.bio || 'No bio provided yet.';
+            
+            if (profile.profilePictureUrl) {
+                document.getElementById('friendProfileImg').src = profile.profilePictureUrl;
+            } else {
+                // Reset to default if they have no picture
+                document.getElementById('friendProfileImg').src = "https://via.placeholder.com/120"; 
+            }
+            
+            // Show the modal
+            document.getElementById('friendProfileModal').style.display = 'flex';
+        } else {
+            alert("Could not load user's profile.");
+        }
+    } catch (e) {
+        console.error("Error loading friend's profile", e);
+    }
+}
+
+
+
+
+
+
+
 // Global AJAX Interceptor for 401 Session Expirations
 $.ajaxSetup({
   error: function(xhr) {

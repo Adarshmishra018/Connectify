@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .profile-container {
+            max-width: 500px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            color: black;
+        }
+        .profile-pic {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #007bff;
+            margin-bottom: 15px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .back-btn {
+            background-color: #6c757d;
+            margin-bottom: 20px;
+        }
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-container">
+        <button class="back-btn" onclick="window.location.href='users.html'">⬅ Back to Friends</button>
+        <h2>My Profile</h2>
+        
+        <!-- Profile Picture Display -->
+        <img id="profileImageDisplay" class="profile-pic" src="https://via.placeholder.com/150" alt="Profile Picture">
+        
+        <!-- File Upload for Profile Picture -->
+        <div class="form-group">
+            <label for="profileImageInput">Change Profile Picture:</label>
+            <input type="file" id="profileImageInput" accept="image/*">
+        </div>
+
+        <!-- Bio Input -->
+        <div class="form-group">
+            <label for="bioInput">About Me (Bio):</label>
+            <textarea id="bioInput" placeholder="Write something about yourself..."></textarea>
+        </div>
+
+        <button onclick="saveProfile()">Save Profile</button>
+        <p id="statusMessage" style="color: green; display: none; margin-top: 10px;">Profile Updated!</p>
+    </div>
+
+    <!-- Include your existing config or auth logic if needed -->
+    <script src="profile.js"></script>
+</body>
+</html>
