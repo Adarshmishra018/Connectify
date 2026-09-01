@@ -36,19 +36,17 @@ public class FriendController {
     public FriendController(FriendService friendService) {
         this.friendService = friendService;
     }
-    /**
-     * Gets all friends of a specific user.
-     */
-    @GetMapping("/{userId}")
+
+     // Gets all friends of a specific user.
+    @GetMapping("/{userId}")	//for fetching details from user Id
     public ResponseEntity<List<UserEntity>> getFriends(@PathVariable Long userId) {
         logger.debug("Fetching friends for user ID: {}", userId);
         List<UserEntity> friends = friendService.getFriends(userId);
         return ResponseEntity.ok(friends);
     }
-    /**
-     * Adds a friend connection.
-     */
-    @PostMapping("/add")
+
+     // Adds a friend connection.
+    @PostMapping("/add") //for adding a new friend
     public ResponseEntity<Map<String, String>> addFriend(@RequestBody FriendEntity friend) {
         logger.debug("Adding friend relation between: {} and {}", friend.getUserId(), friend.getFriendId());
         String status = friendService.addFriend(friend);
@@ -56,38 +54,6 @@ public class FriendController {
     }
 }
 
-//@RestController
-//	@RequestMapping("/api/auth/friends")
-//	public class FriendController {
-//
-//	
-//	private static final Logger logger = LogManager.getLogger(FriendController.class);
-//	
-//	
-//	    @Autowired
-//	    private FriendRepository friendRepository;
-//
-//	    @Autowired
-//	    private UserRepository userRepository;
-//	   
-//	        private final FriendService friendService;
-//
-//	        public FriendController(FriendService friendService) {//constructor DI
-//	            this.friendService = friendService;
-//	        }
-//
-//	        @GetMapping("/{userId}")
-//	        public List<UserEntity> getFriends(@PathVariable Long userId) {//reads data from url, return list of friends of userId
-//	        	logger.debug("Inside Friend Controller userId: {}", userId);
-//	        	return friendService.getFriends(userId);
-//	        }
-//
-//	        @PostMapping("/add")
-//	        public String addFriend(@RequestBody FriendEntity friend) {
-//	            return friendService.addFriend(friend);//send String response :Friend added successfully
-//	        }
-//
-//	   
-//}
+
 
 

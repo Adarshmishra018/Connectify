@@ -130,26 +130,26 @@ public class ChatService {
         return chatRepository.save(msg);
     }
 
-    // Delete message for me
+    //Only Delete message for me
     public void deleteForMe(Long messageId, Long userId) {
         ChatMessageEntity msg = chatRepository.findById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("Message not found"));
 
-        if (msg.getSenderId().equals(userId)) {
-            msg.setDeletedBySender(true);
-        } else if (msg.getReceiverId().equals(userId)) {
-            msg.setDeletedByReceiver(true);
+        if (msg.getSenderId().equals(userId)) {//if sender Id is equal to current user Id
+            msg.setDeletedBySender(true);			//set delete option as true
+        } else if (msg.getReceiverId().equals(userId)) {//if reciever Id is equal to current user Id
+            msg.setDeletedByReceiver(true);//set delete option as true
         }
         
         // If both sides deleted it for themselves, delete it physically from database
-        if (msg.isDeletedBySender() && msg.isDeletedByReceiver()) {
-            chatRepository.delete(msg);
+        if (msg.isDeletedBySender() && msg.isDeletedByReceiver()) { //if deletedbysender and deleted by reciever is true
+            chatRepository.delete(msg);	//delete message
         } else {
-            chatRepository.save(msg);
+            chatRepository.save(msg);//otherwise save message
         }
     }
 
-    // Delete message for everyone
+    //Only Delete message for everyone
     public void deleteForEveryone(Long messageId, Long senderId) {
         ChatMessageEntity msg = chatRepository.findById(messageId)
                 .orElseThrow(() -> new IllegalArgumentException("Message not found"));
@@ -158,7 +158,7 @@ public class ChatService {
             throw new SecurityException("You can only delete messages you sent");
         }
 
-        msg.setDeletedForEveryone(true);
+        msg.setDeletedForEveryone(true);// set delete message as true
         msg.setMessage("This message was deleted"); // Redact original content
         chatRepository.save(msg);
     }

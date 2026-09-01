@@ -16,6 +16,7 @@ import com.example.demo.repository.PokeMessageRepository;
 
 import java.util.*;
 
+ 
 @RestController
 @RequestMapping("/api/auth/nearby-poke")
 public class NearByController {
@@ -34,21 +35,20 @@ public class NearByController {
 
     // Update location of the user
     @PostMapping("/location")
-    public ResponseEntity<?> updateLocation(
-            @RequestParam Long userId,
-            @RequestParam Double latitude,
-            @RequestParam Double longitude) {
+    public ResponseEntity<?> updateLocation(@RequestParam Long userId,@RequestParam Double latitude, @RequestParam Double longitude) {
         
         UserLocationEntity location = userLocationRepository.findByUserId(userId)
-                .orElse(new UserLocationEntity(userId, latitude, longitude));
+                .orElse(new UserLocationEntity(userId, latitude, longitude)); //fetch location
         
-        location.setLatitude(latitude);
-        location.setLongitude(longitude);
-        userLocationRepository.save(location);
+        location.setLatitude(latitude);//set latitude in location
+        location.setLongitude(longitude);//set longitude in location
+        userLocationRepository.save(location);//save location in db
         
         return ResponseEntity.ok(Map.of("message", "Location updated successfully"));
     }
 
+    
+    
     // Get all users within 200 meters using Haversine calculation
     @GetMapping("/users")
     public ResponseEntity<List<NearbyUserDto>> getNearbyUsers(@RequestParam Long userId) {
@@ -84,12 +84,11 @@ public class NearByController {
         return ResponseEntity.ok(nearbyUsers);
     }
 
+    
+    
     // Poke user with validation constraints
     @PostMapping("/poke")
-    public ResponseEntity<?> pokeUser(
-            @RequestParam Long senderId,
-            @RequestParam Long receiverId,
-            @RequestParam String message) {
+    public ResponseEntity<?> pokeUser(@RequestParam Long senderId, @RequestParam Long receiverId, @RequestParam String message) {
 
         // Rule 1: Dislike messages cannot send messages again
         boolean isDisliked = pokeMessageRepository.existsBySenderIdAndReceiverIdAndReaction(senderId, receiverId, "DISLIKE");
