@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8081/api";
+const BASE_URL = "https://connectify-3-a991.onrender.com/api";
 
 // Register API
 function registerUser() {
@@ -32,7 +32,7 @@ function loginUser() {
   };
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/login",
+    url: "https://connectify-3-a991.onrender.com/api/auth/login",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify(loginData),
@@ -276,7 +276,7 @@ function handleCredentialResponse(response) {
   const idToken = response.credential;
   
   $.ajax({
-    url: "http://localhost:8081/api/auth/google-login",
+    url: "https://connectify-3-a991.onrender.com/api/auth/google-login",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify({ idToken: idToken }),
