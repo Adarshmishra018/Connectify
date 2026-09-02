@@ -279,6 +279,7 @@ function handleCredentialResponse(response) {
     url: "https://connectify-3-a991.onrender.com/api/auth/google-login",
     type: "POST",
     contentType: "application/json",
+	
     data: JSON.stringify({ idToken: idToken }),
     success: function(res) {
       localStorage.setItem("userId", res.id);

@@ -53,18 +53,56 @@ public class SecurityConfig {
 		return http.build();
 	}
 
+//	@Bean
+//	public CorsConfigurationSource corsConfigurationSource() {
+//		CorsConfiguration configuration = new CorsConfiguration();
+//		// Allow connections from anywhere. Restrict to your domain in production
+//		configuration.setAllowedOriginPatterns(List.of("*"));
+//		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
+//		configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
+//		configuration.setExposedHeaders(List.of("x-auth-token"));
+//		configuration.setAllowCredentials(true);
+//		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//		source.registerCorsConfiguration("/**", configuration);
+//		return source;
+//	}
+	
+	
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration configuration = new CorsConfiguration();
-		// Allow connections from anywhere. Restrict to your domain in production
-		configuration.setAllowedOriginPatterns(List.of("*"));
-		configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-		configuration.setAllowedHeaders(Arrays.asList("authorization", "content-type", "x-auth-token"));
-		configuration.setExposedHeaders(List.of("x-auth-token"));
-		configuration.setAllowCredentials(true);
-		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", configuration);
-		return source;
+
+	    CorsConfiguration configuration = new CorsConfiguration();
+
+	    configuration.setAllowedOriginPatterns(List.of(
+	        "https://connectify-3-a991.onrender.com",
+	        "http://localhost:8081"
+	    ));
+
+	    configuration.setAllowedMethods(Arrays.asList(
+	        "GET",
+	        "POST",
+	        "PUT",
+	        "PATCH",
+	        "DELETE",
+	        "OPTIONS"
+	    ));
+
+	    configuration.setAllowedHeaders(Arrays.asList(
+	        "authorization",
+	        "content-type",
+	        "x-auth-token"
+	    ));
+
+	    configuration.setExposedHeaders(List.of("x-auth-token"));
+
+	    configuration.setAllowCredentials(true);
+
+	    UrlBasedCorsConfigurationSource source =
+	        new UrlBasedCorsConfigurationSource();
+
+	    source.registerCorsConfiguration("/**", configuration);
+
+	    return source;
 	}
 
 }
