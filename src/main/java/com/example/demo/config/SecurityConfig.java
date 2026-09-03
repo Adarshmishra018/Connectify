@@ -68,6 +68,8 @@ public class SecurityConfig {
 //	}
 	
 	
+	//for CORS
+	
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 
