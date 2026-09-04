@@ -1,12 +1,11 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Login - Connectify</title>
   <link rel="stylesheet" href="style.css">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
-
 </head>
 <body>
 
@@ -21,17 +20,15 @@
     <p style="color: #94a3b8; font-size: 14px; margin-top: 4px;">Sign in to your account</p>
   </div>
 
-  <input type="email" id="loginEmail" placeholder="Email Address">
-  <input type="password" id="loginPassword" placeholder="Password">
+  <input type="email" id="loginEmail" placeholder="Email Address" autocomplete="email">
+  <input type="password" id="loginPassword" placeholder="Password" autocomplete="current-password">
 
   <button onclick="loginUser()">
     <span>Login</span>
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
   </button>
 
-  
-
-  <div style="margin-top: 20px; display: flex; justify-content: center;">
+  <div class="google-signin-wrapper">
     <div id="g_id_onload"
          data-client_id="1098423434890-r7daqjuoi7hgdcguk2r87gad6qnpcdd2.apps.googleusercontent.com"
          data-context="signin"
@@ -46,16 +43,16 @@
          data-text="signin_with"
          data-size="large"
          data-logo_alignment="left"
-         data-width="360">
+         data-width="280">
     </div>
   </div>
 
   <p class="register-prompt">Don't have an account? <a href="register.html">Register</a></p>
   
-  <a href="forgot.html" style="color: #6366f1; text-decoration: none; font-weight: 500;">Forgot Password?</a>
+  <div style="text-align: center; margin-top: 14px;">
+    <a href="forgot.html" style="color: #818cf8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 6px 12px; display: inline-block;">Forgot Password?</a>
+  </div>
 </div>
-
-
 
 <script src="jquery.js"></script>
 <script src="config.js"></script>
@@ -63,118 +60,3 @@
 
 </body>
 </html>
-
-
-
-
-<!--<!DOCTYPE html>
-<html>
-<head>
-  <title>Login</title>
-  <link rel="stylesheet" href="style.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-    }
-
-    .container {
-      background: #ffffff;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      padding: 40px;
-      width: 100%;
-      max-width: 380px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 25px;
-      font-size: 26px;
-    }
-
-    .container input {
-      display: block;
-      width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-      transition: border-color 0.2s ease;
-    }
-
-    .container input:focus {
-      border-color: #764ba2;
-    }
-
-    .container button {
-      display: block;
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 8px;
-      background: #764ba2;
-      color: #fff;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.1s ease;
-    }
-
-    .container button:hover {
-      background: #667eea;
-    }
-
-    .container button:active {
-      transform: scale(0.97);
-    }
-
-    .container p {
-      text-align: center;
-      margin-top: 18px;
-      font-size: 14px;
-      color: #555;
-    }
-
-    .container p a {
-      color: #764ba2;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .container p a:hover {
-      text-decoration: underline;
-    }
-  </style>
-</head>
-<body>
-
-<div class="container">
-  <h2>Login</h2>
-
-  <input type="email" id="loginEmail" placeholder="Email">
-  <input type="password" id="loginPassword" placeholder="Password">
-
-  <button onclick="loginUser()">Login</button>
-
-  <p>Don't have account? <a href="register.html">Register</a></p>
-</div>
-
-<script src="jquery.js"></script>
-<script src="script.js"></script>
-</body>
-</html>-->

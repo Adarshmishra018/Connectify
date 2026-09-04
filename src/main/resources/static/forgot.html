@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Forgot Password - Connectify</title>
   <link rel="stylesheet" href="style.css">
 </head>
@@ -20,7 +21,7 @@
   <div id="forgotPasswordSection">
     <!-- Step 1: Request code -->
     <div id="forgotStep1">
-      <input type="email" id="forgotEmail" placeholder="Enter your email address">
+      <input type="email" id="forgotEmail" placeholder="Enter your email address" autocomplete="email">
       <button onclick="sendResetCode()">
         <span>Send Verification Code</span>
       </button>
@@ -28,7 +29,7 @@
 
     <!-- Step 2: Verification code input -->
     <div id="forgotStep2" style="display: none;">
-      <input type="text" id="forgotCode" placeholder="Enter 6-Digit Verification Code">
+      <input type="text" id="forgotCode" placeholder="Enter 6-Digit Verification Code" inputmode="numeric">
       <button onclick="verifyResetCode()">
         <span>Verify Code</span>
       </button>
@@ -36,15 +37,18 @@
 
     <!-- Step 3: New password input -->
     <div id="forgotStep3" style="display: none;">
-      <input type="password" id="newPassword" placeholder="Enter New Password">
-      <input type="password" id="confirmNewPassword" placeholder="Confirm New Password">
+      <input type="password" id="newPassword" placeholder="Enter New Password" autocomplete="new-password">
+      <input type="password" id="confirmNewPassword" placeholder="Confirm New Password" autocomplete="new-password">
       <button onclick="resetUserPassword()">
         <span>Reset Password</span>
       </button>
     </div>
 
-    <div style="margin-top: 20px; text-align: center; font-size: 14px;">
-		<a href="login.html" style="color: #6366f1; text-decoration: none; font-weight: 500;">Sign in to your account</a>
+    <div style="margin-top: 20px; text-align: center;">
+      <a href="login.html" class="back-link-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to Login
+      </a>
     </div>
   </div>
 </div>
@@ -52,7 +56,6 @@
 <script src="jquery.js"></script>
 <script src="config.js"></script>
 <script src="script.js"></script>
-<script src="config.js"></script> <!-- Add this line -->
 
 </body>
 </html>
