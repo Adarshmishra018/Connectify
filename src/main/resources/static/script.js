@@ -201,7 +201,7 @@ function sendResetCode() {
   }
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/forgot-password/send-code",
+    url: "https://connectify-3-a991.onrender.com/api/auth/forgot-password/send-code",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify({ email: email }),
@@ -226,7 +226,7 @@ function verifyResetCode() {
   }
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/forgot-password/verify-code",
+    url: "https://connectify-3-a991.onrender.com/api/auth/forgot-password/verify-code",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify({ email: email, code: code }),
@@ -257,7 +257,7 @@ function resetUserPassword() {
   }
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/forgot-password/reset-password",
+    url: "https://connectify-3-a991.onrender.com/api/auth/forgot-password/reset-password",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify({ email: email, newPassword: newPassword }),

@@ -28,7 +28,7 @@ async function showFriendProfile() {
     if (!receiverId) return;
 
     try {
-		const response = await fetch(`http://localhost:8081/api/auth/${receiverId}/profile`, {
+		const response = await fetch(`https://connectify-3-a991.onrender.com/api/auth/${receiverId}/profile`, {
             method: 'GET',
             headers: { 
                 'Authorization': `Bearer ${token}` 
@@ -99,7 +99,7 @@ function startHeartbeat() {
 
   function sendHeartbeat() {
     $.ajax({
-      url: "http://localhost:8081/api/status/heartbeat?userId=" + userId,
+      url: "https://connectify-3-a991.onrender.com/api/status/heartbeat?userId=" + userId,
       type: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -124,7 +124,7 @@ function startReceiverStatusPoller() {
     if (isTyping) return;
 
     $.ajax({
-      url: "http://localhost:8081/api/status/" + receiverId,
+      url: "https://connectify-3-a991.onrender.com/api/status/" + receiverId,
       type: "GET",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -267,7 +267,7 @@ function pollGlobalInboxForNotifications() {
   if (!userId) return;
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/inbox/" + userId,
+    url: "https://connectify-3-a991.onrender.com/api/auth/inbox/" + userId,
     type: "GET",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token")
@@ -308,7 +308,7 @@ function loadMessages() {
 
   // Mark incoming messages as read
   $.ajax({
-    url: `http://localhost:8081/api/auth/messages/read?userId=${senderId}&friendId=${receiverId}`,
+    url: `https://connectify-3-a991.onrender.com/api/auth/messages/read?userId=${senderId}&friendId=${receiverId}`,
     type: "POST",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token")
@@ -316,7 +316,7 @@ function loadMessages() {
   });
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/messages",
+    url: "https://connectify-3-a991.onrender.com/api/auth/messages",
     type: "GET",
     data: {
       senderId: senderId,
@@ -459,7 +459,7 @@ function sendMessage() {
   };
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/send",
+    url: "https://connectify-3-a991.onrender.com/api/auth/send",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify(chatMessage),
@@ -490,7 +490,7 @@ function uploadFileAndSend(file) {
   $("#messageInput").val("Uploading: " + file.name + "...");
 
   $.ajax({
-    url: "http://localhost:8081/api/files/upload",
+    url: "https://connectify-3-a991.onrender.com/api/files/upload",
     type: "POST",
     data: formData,
     processData: false,
@@ -522,7 +522,7 @@ function uploadFileAndSend(file) {
       };
 
       $.ajax({
-        url: "http://localhost:8081/api/auth/send",
+        url: "https://connectify-3-a991.onrender.com/api/auth/send",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(chatMessage),
@@ -632,7 +632,7 @@ function clearTyping() {
   if (!senderId || !receiverId) return;
 
   $.ajax({
-    url: "http://localhost:8081/api/typing/clear",
+    url: "https://connectify-3-a991.onrender.com/api/typing/clear",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify({
@@ -656,7 +656,7 @@ function setupPushNotifications() {
       messaging.getToken({ vapidKey: 'YOUR_VAPID_KEY_HERE' }).then((currentToken) => {
         if (currentToken) {
           $.ajax({
-            url: "http://localhost:8081/api/auth/notifications/register-token",
+            url: "https://connectify-3-a991.onrender.com/api/auth/notifications/register-token",
             type: "POST",
             data: {
               userId: localStorage.getItem("userId"),
@@ -736,7 +736,7 @@ function openViewOnceMessage(msgId) {
     alert(`View Once message contents:\n\n"${originalContent}"`);
     
     $.ajax({
-        url: `http://localhost:8081/api/auth/messages/${msgId}/view-once-open?userId=${senderId}`,
+        url: `https://connectify-3-a991.onrender.com/api/auth/messages/${msgId}/view-once-open?userId=${senderId}`,
         type: "POST",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token")
@@ -765,7 +765,7 @@ function saveEditMessage() {
     if (!updatedText.trim()) return;
 
     $.ajax({
-        url: `http://localhost:8081/api/auth/messages/${editingMessageId}/edit?senderId=${senderId}`,
+        url: `https://connectify-3-a991.onrender.com/api/auth/messages/${editingMessageId}/edit?senderId=${senderId}`,
         type: "PUT",
         contentType: "application/json",
         data: JSON.stringify({ message: updatedText }),
@@ -802,7 +802,7 @@ function deleteForMe(msgId) {
 function deleteForEveryone(msgId) {
     const senderId = localStorage.getItem("userId");
     $.ajax({
-        url: `http://localhost:8081/api/auth/messages/${msgId}/delete-for-everyone?senderId=${senderId}`,
+        url: `https://connectify-3-a991.onrender.com/api/auth/messages/${msgId}/delete-for-everyone?senderId=${senderId}`,
         type: "POST",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("token")

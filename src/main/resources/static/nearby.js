@@ -31,7 +31,7 @@ function updateLocationAndLoad() {
       $("#locationStatus").text(`Latitude: ${lat.toFixed(4)}, Longitude: ${lon.toFixed(4)}`);
 
       $.ajax({
-        url: `http://localhost:8081/api/auth/nearby-poke/location?userId=${currentUserId}&latitude=${lat}&longitude=${lon}`,
+        url: `https://connectify-3-a991.onrender.com/api/auth/nearby-poke/location?userId=${currentUserId}&latitude=${lat}&longitude=${lon}`,
         type: "POST",
         headers: {
           "Authorization": "Bearer " + token
@@ -53,7 +53,7 @@ function updateLocationAndLoad() {
 
 function loadNearbyUsers() {
   $.ajax({
-    url: `http://localhost:8081/api/auth/nearby-poke/users?userId=${currentUserId}`,
+    url: `https://connectify-3-a991.onrender.com/api/auth/nearby-poke/users?userId=${currentUserId}`,
     type: "GET",
     headers: {
       "Authorization": "Bearer " + token
@@ -93,7 +93,7 @@ function loadNearbyUsers() {
 
 function pokeNearbyUser(targetId, targetName) {
   $.ajax({
-    url: `http://localhost:8081/api/auth/nearby-poke/poke?senderId=${currentUserId}&receiverId=${targetId}&message=👉 Poked you!`,
+    url: `https://connectify-3-a991.onrender.com/api/auth/nearby-poke/poke?senderId=${currentUserId}&receiverId=${targetId}&message=👉 Poked you!`,
     type: "POST",
     headers: {
       "Authorization": "Bearer " + token
@@ -110,7 +110,7 @@ function pokeNearbyUser(targetId, targetName) {
 
 function loadReceivedPokes() {
   $.ajax({
-    url: `http://localhost:8081/api/auth/nearby-poke/pokes/received?userId=${currentUserId}`,
+    url: `https://connectify-3-a991.onrender.com/api/auth/nearby-poke/pokes/received?userId=${currentUserId}`,
     type: "GET",
     headers: {
       "Authorization": "Bearer " + token
@@ -169,7 +169,7 @@ function loadReceivedPokes() {
 
 function reactPoke(pokeId, reaction) {
   $.ajax({
-    url: `http://localhost:8081/api/auth/nearby-poke/react?pokeId=${pokeId}&reaction=${reaction}`,
+    url: `https://connectify-3-a991.onrender.com/api/auth/nearby-poke/react?pokeId=${pokeId}&reaction=${reaction}`,
     type: "POST",
     headers: {
       "Authorization": "Bearer " + token
@@ -190,7 +190,7 @@ function reactPoke(pokeId, reaction) {
 
 function addFriendFromPoke(pokeId, senderId) {
   $.ajax({
-    url: "http://localhost:8081/api/auth/friends/add",
+    url: "https://connectify-3-a991.onrender.com/api/auth/friends/add",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify({

@@ -47,7 +47,7 @@ function startHeartbeat() {
 
   function sendHeartbeat() {
     $.ajax({
-      url: "http://localhost:8081/api/status/heartbeat?userId=" + userId,
+      url: "https://connectify-3-a991.onrender.com/api/status/heartbeat?userId=" + userId,
       type: "POST",
       headers: {
         "Authorization": "Bearer " + localStorage.getItem("token")
@@ -71,7 +71,7 @@ function pollInboxMessages() {
   if (!userId) return;
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/inbox/" + userId,
+    url: "https://connectify-3-a991.onrender.com/api/auth/inbox/" + userId,
     type: "GET",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token")
@@ -137,7 +137,7 @@ function loadFriends() {
   startHeartbeat();
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/friends/" + userId,
+    url: "https://connectify-3-a991.onrender.com/api/auth/friends/" + userId,
     type: "GET",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token")
@@ -194,7 +194,7 @@ function loadFriends() {
 
 function fetchFriendStatus(friendId) {
   $.ajax({
-    url: "http://localhost:8081/api/status/" + friendId,
+    url: "https://connectify-3-a991.onrender.com/api/status/" + friendId,
     type: "GET",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token")
@@ -237,7 +237,7 @@ function openChat(friendId, friendName) {
   
   // Mark these messages as read on the backend when clicking into the conversation
   $.ajax({
-    url: `http://localhost:8081/api/auth/messages/read?userId=${localStorage.getItem("userId")}&friendId=${friendId}`,
+    url: `https://connectify-3-a991.onrender.com/api/auth/messages/read?userId=${localStorage.getItem("userId")}&friendId=${friendId}`,
     type: "POST",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token")
@@ -260,7 +260,7 @@ function addFriend() {
   }
 
   $.ajax({
-    url: "http://localhost:8081/api/auth/friends/add",
+    url: "https://connectify-3-a991.onrender.com/api/auth/friends/add",
     type: "POST",
     contentType: "application/json",
     data: JSON.stringify({
@@ -285,7 +285,7 @@ function addFriend() {
 
 function logout() {
   $.ajax({
-    url: "http://localhost:8081/api/auth/logout",
+    url: "https://connectify-3-a991.onrender.com/api/auth/logout",
     type: "POST",
     headers: {
       "Authorization": "Bearer " + localStorage.getItem("token")
